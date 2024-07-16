@@ -37,8 +37,4 @@ public class UserConnection {
         return Objects.hash(handler, userId);
     }
 
-    public boolean isSame(Long sendUserId) {
-        return sendUserId == userId;
-    }
-
 }

@@ -1,6 +1,5 @@
 package websocket;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.internal.ConcurrentSet;
 import websocket.utils.JsonParser;
 
@@ -27,9 +26,9 @@ public class Room {
         System.out.println("current Size = " + connectedUsers.size());
     }
 
-    public void disConnect(Long userId) {
+    public void disConnect(UserConnection user) {
         connectedUsers.stream()
-                .filter(cu -> cu.isSame(userId))
+                .filter(cu -> cu.isSame(user))
                 .forEach(cu -> connectedUsers.remove(cu));
 
         System.out.println("after Remove Size = " + connectedUsers.size());

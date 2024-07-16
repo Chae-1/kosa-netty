@@ -35,7 +35,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             System.out.println(request);
             handleRequest(room, request);
         } else {
-            room.disConnect(userId);
+            room.disConnect(new UserConnection(ctx, userId));
             throw new UnsupportedOperationException("연결 해체");
         }
     }
