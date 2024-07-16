@@ -20,7 +20,7 @@ public class WebSocketServer {
     public void start() throws Exception {
         // 클라이언트와 연결을 체결할 bossGroup
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        // 연결된 클라이언트와 실제 이벤트를 담당하는 부분
+        // 연결된 클라이언트와 실제 이벤트를 담당하는 부분.
         // 채널을 초기화하는 과정에서 pipeline에 추가하는 핸들러를 호출하는 이벤트 그룹.
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap();
@@ -30,6 +30,8 @@ public class WebSocketServer {
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
+                        // client가 netty에 연결이 체결됐을 때 사용할 이벤트 핸들러를 지정한다.
+                        //
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             System.out.println("WebSocketServer.initChannel");

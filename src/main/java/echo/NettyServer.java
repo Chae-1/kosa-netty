@@ -1,3 +1,5 @@
+package echo;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -22,7 +24,7 @@ public class NettyServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            System.out.println("NettyServer.initChannel");
+                            System.out.println("echo.NettyServer.initChannel");
                             socketChannel.pipeline().addLast(new StringEncoder(), new StringDecoder(), new EchoServerHandler());
                         }
                     });

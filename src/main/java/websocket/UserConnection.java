@@ -14,17 +14,14 @@ public class UserConnection {
         this.userId = userId;
     }
 
-    public boolean isSameUser(UserConnection user) {
+    public boolean isSame(UserConnection user) {
         return user.userId == this.userId;
     }
 
     public void sendMessage(String chatMessage) {
+        System.out.println("UserConnection.sendMessage: " + chatMessage);
         handler.channel().writeAndFlush(new TextWebSocketFrame(chatMessage));
         // 2. 이를 전달 받아 Chat Database에 저장한다.
-    }
-
-    public boolean isSame(Long sendUserId) {
-        return userId == sendUserId;
     }
 
     @Override
@@ -39,4 +36,9 @@ public class UserConnection {
     public int hashCode() {
         return Objects.hash(handler, userId);
     }
+
+    public boolean isSame(Long sendUserId) {
+        return sendUserId == userId;
+    }
+
 }

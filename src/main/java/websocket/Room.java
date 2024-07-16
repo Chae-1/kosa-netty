@@ -1,5 +1,7 @@
 package websocket;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.internal.ConcurrentSet;
 import websocket.utils.JsonParser;
 
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Room {
@@ -16,7 +19,7 @@ public class Room {
 
     public Room(Long roomId) {
         this.roomId = roomId;
-        connectedUsers = new HashSet<>();
+        connectedUsers = new ConcurrentSet<>();
     }
 
     public void join(UserConnection user) {
@@ -24,13 +27,18 @@ public class Room {
         System.out.println("current Size = " + connectedUsers.size());
     }
 
-    public void disConnect(UserConnection connection) {
-        connectedUsers.remove(connection);
+    public void disConnect(Long userId) {
+        connectedUsers.stream()
+                .filter(cu -> cu.isSame(userId))
+                .forEach(cu -> connectedUsers.remove(cu));
+
         System.out.println("after Remove Size = " + connectedUsers.size());
     }
 
     private String saveMessage(ChatMessage chatMessage) {
         System.out.println("Room.saveMessage");
+        LocalDateTime sendDateTime = chatMessage.getSendDateTime();
+        System.out.println("sendDateTime : " + sendDateTime);
         String json = JsonParser.objectToJson(chatMessage);
         System.out.println(json);
         try {
@@ -52,19 +60,15 @@ public class Room {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        } catch (
-                URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void broadCastMessage(ChatMessage chatMessage) {
-        Long sendUserId = chatMessage.getUserId();
         String json = saveMessage(chatMessage);
-        System.out.println(connectedUsers.size());
         for (UserConnection connectedUser : connectedUsers) {
-            if (!connectedUser.isSame(sendUserId))
-                connectedUser.sendMessage(json);
+            connectedUser.sendMessage(json);
         }
     }
 }

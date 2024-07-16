@@ -26,13 +26,16 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         Long roomId = (Long) ctx.channel().attr(AttributeKey.valueOf("roomId")).get();
         Long userId = (Long) ctx.channel().attr(AttributeKey.valueOf("userId")).get();
 
+        System.out.println("userId = " + userId);
+        System.out.println("roomId = " + roomId);
+
         Room room = rooms.get(roomId);
         if (webSocketFrame instanceof TextWebSocketFrame f) {
             String request = f.text(); // 내용 -> Json
             System.out.println(request);
             handleRequest(room, request);
         } else {
-            room.disConnect(new UserConnection(ctx, userId));
+            room.disConnect(userId);
             throw new UnsupportedOperationException("연결 해체");
         }
     }
