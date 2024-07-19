@@ -13,6 +13,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
 
     private static final Map<Long, Room> rooms = new HashMap<>();
 
+    // user
     public void joinUser(ChannelHandlerContext ctx, Long userId, Long roomId) {
         rooms.putIfAbsent(roomId, new Room(roomId));
         Room room = rooms.get(roomId);
@@ -22,13 +23,8 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame webSocketFrame) throws Exception {
-        System.out.println(webSocketFrame);
         Long roomId = (Long) ctx.channel().attr(AttributeKey.valueOf("roomId")).get();
         Long userId = (Long) ctx.channel().attr(AttributeKey.valueOf("userId")).get();
-
-        System.out.println("userId = " + userId);
-        System.out.println("roomId = " + roomId);
-
         Room room = rooms.get(roomId);
         if (webSocketFrame instanceof TextWebSocketFrame f) {
             String request = f.text(); // 내용 -> Json
